@@ -27,3 +27,4 @@ numpy>=1.24.0  # Chroma 必需依赖
 
 # 通用工具
 python-dotenv>=1.0.0
+langchain-zhipu>=0.1.0
