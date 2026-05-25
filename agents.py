@@ -9,6 +9,7 @@ import random
 import os
 import time
 import dotenv
+import tempfile
 
 # 加载环境变量
 dotenv.load_dotenv()
@@ -40,7 +41,7 @@ MODEL_CONFIGS = {
 # 全局兼容变量（解决app.py调用init_llm的问题）
 current_llm = None
 
-# 新增：兼容app.py的init_llm函数
+# 新增：兼容app.py的初始化函数，保留全局变量
 def init_llm(model_name):
     """兼容app.py的初始化函数，保留全局变量"""
     global current_llm
@@ -144,11 +145,20 @@ def load_interview_knowledge():
     with open(knowledge_path, "r", encoding="utf-8") as f:
         return f.read()
 
+# ===================== 修复后的 RAG 检索函数（解决Streamlit部署报错） =====================
 def get_rag_retriever():
     knowledge = load_interview_knowledge()
     texts = [line.strip() for line in knowledge.split("\n") if line.strip()]
     embeddings = FakeEmbeddings(size=128)
-    db = Chroma.from_texts(texts, embeddings)
+    
+    # 创建临时目录，适配Streamlit云环境权限
+    temp_dir = tempfile.mkdtemp()
+    db = Chroma.from_texts(
+        texts=texts,
+        embedding=embeddings,
+        persist_directory=temp_dir,
+        collection_name="interview_helper"
+    )
     return db.as_retriever(search_kwargs={"k": 3})
 
 # ===================== 中央调度Agent ====================
