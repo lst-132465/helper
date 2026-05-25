@@ -1,11 +1,18 @@
+# 核心框架
 streamlit==1.35.0
+
+# AI模型依赖（无冲突版本）
 langchain==0.1.17
 langchain-openai==0.1.6
+
+# 文件解析（简历/PDF/Word）
 pandas==2.2.2
 python-docx==1.1.2
 PyPDF2==3.0.1
-openai-whisper==20231117
-torch==2.2.2
+
+# 文本处理
 jieba==0.42.1
 scikit-learn==1.4.2
+
+# 通用工具
 python-dotenv==1.0.1
